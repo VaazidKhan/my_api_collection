@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "67b8204a-947b-4aff-b34e-70e06dd1e3b9",
+		"name": "ReqRes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37512349"
+	},
+	"item": [
+		{
+			"name": "Register_User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//checking success code\r",
+							"pm.test(\"Status is success\",()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//verify content type is application/json\r",
+							"pm.test(\"Content type is application/json\",()=>{\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.contains('application/json');\r",
+							"});\r",
+							"\r",
+							"//creating a variable to collect json response for post method\r",
+							"var jsonBody = pm.response.json();\r",
+							"\r",
+							"//creating collection variable to set id and token\r",
+							"pm.collectionVariables.set(\"id\", jsonBody.id);\r",
+							"pm.collectionVariables.set(\"token\", jsonBody.token);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/register",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unsuccess_Registration",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//verify status is 400\r",
+							"pm.test(\"check status code is 400\",()=>{\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"//creating a variable to validate error message\r",
+							"const jsonBody = pm.response.json();\r",
+							"\r",
+							"//testing the error message is as per expected\r",
+							"pm.test(\"error message data\",()=>{\r",
+							"    pm.expect(jsonBody.error).to.be.eql(\"Missing password\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/register",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "LoginUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//checking success code\r",
+							"pm.test(\"Status is success\",()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//creating a variable to collect json response for post method\r",
+							"var jsonBody = pm.response.json();\r",
+							"\r",
+							"//check the token is same as per registration token\r",
+							"pm.test(\"Validate token value\",()=>{\r",
+							"    pm.expect(jsonBody.token).to.eql(pm.collectionVariables.get('token'));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"cityslicka\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/login",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update_userDetails",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//checking success code\r",
+							"pm.test(\"Status is success\",()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//creating a variable to collect json response for post method\r",
+							"const jsonBody = pm.response.json();\r",
+							"\r",
+							"//check the updated time is displayed\r",
+							"pm.test(\"Time updates message\",()=>{\r",
+							"    pm.expect(jsonBody.updatedAt).to.be.a(\"string\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"vaazid\",\r\n    \"job\": \"tester\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/users/{{id}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"users",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//checking success code\r",
+							"pm.test(\"Status is success\",()=>{\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"//removing token and id\r",
+							"pm.collectionVariables.unset(\"id\");\r",
+							"pm.collectionVariables.unset(\"token\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}api/users/{{id}}",
+					"host": [
+						"{{url}}api"
+					],
+					"path": [
+						"users",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://reqres.in/",
+			"type": "string"
+		}
+	]
+}
